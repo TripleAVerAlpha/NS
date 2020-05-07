@@ -73,3 +73,4 @@ class Teacher:
                     for g in range(len(net[iI][j].exits)):
                         a = net[iI][j].exits[g]
                         self.sumWay[iI][j][k] += self.sumWay[iI + 1][a][k]
+                    self.sumWay[iI][j][k] = (1 + (1 - (0.052 * self.sumWay[iI][j][k]) / (0.9 + 0.048 * self.sumWay[iI][j][k]))) * 100

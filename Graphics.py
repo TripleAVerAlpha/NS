@@ -57,14 +57,6 @@ canvas.pack()
 #         [Perceptron({1: 1, 2: 1}, [1, 2]), Perceptron({1: 1, 2: 1}, [1, 2])]]
 
 d = {}
-for i in range(2):
-    d.setdefault(i, [0, random()])
-print(f"Словарь 2: {d}")
-e = dict(d)
-d[0] = 5
-print(f"Словарь 2: {e}")
-print(f"Словарь 2: {d}")
-d.clear()
 # Создаем структуру нейронной сети
 netS = [36, randint(1, 36), randint(1, 36), randint(1, 36), randint(1, 36), randint(1, 36), randint(1, 36), 6, 0]
 netP = []
@@ -74,22 +66,21 @@ for j in range(len(netS) - 1):
         if j != 0:
             for i in range(netS[j - 1]):
                 d.setdefault(i, [0, random()])
-            print(f"{j}: {d}")
         a.append(Perceptron(d, range(netS[j + 1])))
         d.clear()
     netP.append(a)
     d.clear()
-maxN = 0
-for i in range(len(netP)):
-    if len(netP[i]) > len(netP[maxN]):
-        maxN = i
-for i in range(len(netP)):
-    a = int((len(netP[maxN]) - len(netP[i])) / 2)
-    s = a * "\t   *   "
-    print(f"{len(netP[i])} \t {s}", end="")
-    for j in range(len(netP[i])):
-        print(f"\t {len(netP[i][j].enters)}({len(netP[i][j].exits)})", end="")
-    print()
+# maxN = 0
+# for i in range(len(netP)):
+#     if len(netP[i]) > len(netP[maxN]):
+#         maxN = i
+# for i in range(len(netP)):
+#     a = int((len(netP[maxN]) - len(netP[i])) / 2)
+#     s = a * "\t   *   "
+#     # print(f"{len(netP[i])} \t {s}", end="")
+#     for j in range(len(netP[i])):
+#         # print(f"\t {len(netP[i][j].enters)}({len(netP[i][j].exits)})", end="")
+#     # print()
 # Создаем сеть опираясь на структуру
 net = NNet(netP)
 b = []
@@ -111,10 +102,11 @@ net.update()
 paint()
 for i in range(len(net.net)):
     for j in range(len(net.net[i])):
-        print(f"\t {teacher.sumWay[i][j]}", end= "")
+        # (1 - (0.04 * teacher.sumWay[i][j][0]) / (0.9 + 0.048 * teacher.sumWay[i][j][0])) * 100
+        print(f"\t {teacher.sumWay[i][j]}", end="")
     print()
 # net.learn(True, 1)
 # net.update()
 # paint()
 # Задерживаем окно на экране
-window.mainloop()
+# window.mainloop()
