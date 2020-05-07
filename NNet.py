@@ -64,5 +64,5 @@ class NNet:
             for i in range(len(self.sumWay)-1):
                 for j in range(len(self.sumWay[i])):
                     for k in range(len(self.sumWay[i][j])):
-                        self.sumWay[]   
+                        self.sumWay[len(self.sumWay[i-1][j])][k] += 1
 
