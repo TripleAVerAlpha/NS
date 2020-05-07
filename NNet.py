@@ -1,3 +1,6 @@
+from builtins import range
+
+
 class Perceptron:
     def __init__(self, enters, exits):
         # Теперь мы в коде создаем перцептрон а сюда передаем лишь его значение которое он и запоминает
@@ -18,8 +21,9 @@ class Perceptron:
         for keys in self.enters:
             self.enters[keys][1] += knut
             if layer != 0:
-                net[layer][keys].learnPer(net, knut, layer-1)
+                net[layer][keys].learnPer(net, knut, layer - 1)
         print(layer)
+
 
 class NNet:
     def __init__(self, net):
@@ -51,18 +55,21 @@ class NNet:
             knut = 0.1
         else:
             knut = -0.1
-        self.net[len(self.net) - 1][answer].learnPer(self.net, knut, len(self.net)-1)
-        print(len(self.net)-1)
+        self.net[len(self.net) - 1][answer].learnPer(self.net, knut, len(self.net) - 1)
+        print(len(self.net) - 1)
 
-    class Teacher:
-        def __init__(self, sumWay):
-            self.sumWay = sumWay
 
-        def updateSumWay(self,net):
-            for k in range(len(self.sumWay[len(self.sumWay)][len(self.sumWay[len(self.sumWay)])])):
-                self.sumWay[len(self.sumWay)][k][k] = 1
-            for i in range(len(self.sumWay)-1):
-                for j in range(len(self.sumWay[i])):
-                    for k in range(len(self.sumWay[i][j])):
-                        self.sumWay[len(self.sumWay[i-1][j])][k] += 1
+class Teacher:
+    def __init__(self, sumWay):
+        self.sumWay = sumWay
 
+    def updateSumWay(self, net):
+        for k in range(6):
+            self.sumWay[len(self.sumWay)-1][k][k] = 1
+        for i in range(len(self.sumWay)):
+            iI = len(self.sumWay) - 1 - i
+            for j in range(len(self.sumWay[iI])):
+                for k in range(6):
+                    for g in range(len(net[iI][j].exits)):
+                        a = net[iI][j].exits[g]
+                        self.sumWay[iI][j][k] += self.sumWay[iI + 1][a][k]

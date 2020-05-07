@@ -4,7 +4,7 @@ from random import random, randint
 from tkinter import *
 
 # Подключаем классы из NNet.py
-from NNet import Perceptron, NNet
+from NNet import *
 
 
 def paint():
@@ -92,13 +92,27 @@ for i in range(len(netP)):
     print()
 # Создаем сеть опираясь на структуру
 net = NNet(netP)
+b = []
+for i in range(len(net.net)):
+    a = []
+    for j in range(len(net.net[i])):
+        a.append([0] * 6)
+    b.append(a)
+
+teacher = Teacher(b)
+teacher.updateSumWay(net.net)
 # Задаем значения на входе
-for i in range (36):
+for i in range(36):
     net.net[0][i].value = randint(0, 10)
 # Пресчитываем сеть
 net.update()
+
 # Отрисовываем
 paint()
+for i in range(len(net.net)):
+    for j in range(len(net.net[i])):
+        print(f"\t {teacher.sumWay[i][j]}", end= "")
+    print()
 # net.learn(True, 1)
 # net.update()
 # paint()
