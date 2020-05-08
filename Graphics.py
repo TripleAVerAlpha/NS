@@ -83,14 +83,8 @@ for j in range(len(netS) - 1):
 #     # print()
 # Создаем сеть опираясь на структуру
 net = NNet(netP)
-b = []
-for i in range(len(net.net)):
-    a = []
-    for j in range(len(net.net[i])):
-        a.append([0] * 6)
-    b.append(a)
 
-teacher = Teacher(b)
+teacher = Teacher(net)
 teacher.updateSumWay(net.net)
 # Задаем значения на входе
 for i in range(36):

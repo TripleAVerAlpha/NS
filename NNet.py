@@ -54,10 +54,28 @@ class NNet:
                 for k in self.net[i][j].enters:
                     self.net[i][j].enters[k][1] += teacher.sumWay[i][j][answer] * knut
 
+    def giveEnters(self, enters):
+        for i in range(len(self.net[0])):
+            self.net[0][i].value = enters[i]
+
+    def getSolution(self):
+        self.update()
+        maxI=0
+        for i in range(len(self.net[len(self.net)-1])):
+            if len(self.net[len(self.net)-1][i]) >= len(self.net[len(self.net)-1][maxI]):
+                maxI = len(self.net[len(self.net) - 1][i])
+        return maxI
+
 
 class Teacher:
-    def __init__(self, sumWay):
-        self.sumWay = sumWay
+    def __init__(self, net):
+        b = []
+        for i in range(len(net.net)):
+            a = []
+            for j in range(len(net.net[i])):
+                a.append([0] * 6)
+            b.append(a)
+        self.sumWay = b
 
     def updateSumWay(self, net):
         for k in range(6):
