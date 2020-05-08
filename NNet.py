@@ -17,12 +17,6 @@ class Perceptron:
             a = cash[i][0] * cash[i][1]
             self.value += a
 
-    def learnPer(self, net, knut, layer):
-        for keys in self.enters:
-            self.enters[keys][1] += knut
-            if layer != 0:
-                net[layer][keys].learnPer(net, knut, layer - 1)
-        print(layer)
 
 
 class NNet:
@@ -50,13 +44,15 @@ class NNet:
                 b = self.net[layer][i].exits[j]
                 self.net[a][b].enters[i][0] = self.net[layer][i].value
 
-    def learn(self, trFl, answer):
+    def learn(self, trFl, answer, teacher):
         if trFl:
             knut = 0.1
         else:
             knut = -0.1
-        self.net[len(self.net) - 1][answer].learnPer(self.net, knut, len(self.net) - 1)
-        print(len(self.net) - 1)
+        for i in range(self.net):
+            for j in range(self.net[i]):
+                for k in self.net[i][j].enters:
+                    self.net[i][j].enters[k][1] += teacher.sumWay[i][j][answer] * knut
 
 
 class Teacher:
