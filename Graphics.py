@@ -51,14 +51,10 @@ canvas = Canvas(window, width=windll.user32.GetSystemMetrics(0), height=windll.u
 # Соединяем это воедино
 canvas.pack()
 
-# netP = [[Perceptron({}, [1, 2]), Perceptron({}, [1, 2]), Perceptron({}, [1, 2])],
-#         [Perceptron({1: 1, 2: 1}, [1, 2]), Perceptron({1: 1, 2: 1}, [1, 2]), Perceptron({1: 1, 2: 1}, [1, 2])],
-#         [Perceptron({1: 1, 2: 1}, [1, 2]), Perceptron({1: 1, 2: 1}, [1, 2])],
-#         [Perceptron({1: 1, 2: 1}, [1, 2]), Perceptron({1: 1, 2: 1}, [1, 2])]]
-
 d = {}
 # Создаем структуру нейронной сети
 netS = [36, randint(1, 36), randint(1, 36), randint(1, 36), randint(1, 36), randint(1, 36), randint(1, 36), 6, 0]
+print(netS)
 netP = []
 for j in range(len(netS) - 1):
     a = []
@@ -70,37 +66,14 @@ for j in range(len(netS) - 1):
         d.clear()
     netP.append(a)
     d.clear()
-# maxN = 0
-# for i in range(len(netP)):
-#     if len(netP[i]) > len(netP[maxN]):
-#         maxN = i
-# for i in range(len(netP)):
-#     a = int((len(netP[maxN]) - len(netP[i])) / 2)
-#     s = a * "\t   *   "
-#     # print(f"{len(netP[i])} \t {s}", end="")
-#     for j in range(len(netP[i])):
-#         # print(f"\t {len(netP[i][j].enters)}({len(netP[i][j].exits)})", end="")
-#     # print()
+
 # Создаем сеть опираясь на структуру
 net = NNet(netP)
-
-teacher = Teacher(net)
-teacher.updateSumWay(net.net)
-# Задаем значения на входе
-for i in range(36):
-    net.net[0][i].value = randint(0, 10)
-# Пресчитываем сеть
-net.update()
-
 # Отрисовываем
 paint()
-for i in range(len(net.net)):
-    for j in range(len(net.net[i])):
-        # (1 - (0.04 * teacher.sumWay[i][j][0]) / (0.9 + 0.048 * teacher.sumWay[i][j][0])) * 100
-        print(f"\t {teacher.sumWay[i][j]}", end="")
-    print()
-# net.learn(True, 1)
-# net.update()
-# paint()
+time.sleep(3)
+net.mutate(0.1)
+# Отрисовываем
+paint()
 # Задерживаем окно на экране
-# window.mainloop()
+window.mainloop()
