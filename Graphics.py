@@ -70,10 +70,17 @@ for j in range(len(netS) - 1):
 # Создаем сеть опираясь на структуру
 net = NNet(netP)
 # Отрисовываем
-paint()
-time.sleep(3)
-net.mutate(0.1)
-# Отрисовываем
-paint()
-# Задерживаем окно на экране
-window.mainloop()
+# paint()
+# time.sleep(3)
+# net.mutate(0.1)
+# # Отрисовываем
+# paint()
+# # Задерживаем окно на экране
+# window.mainloop()
+a = [randint(0, 100), randint(0, 100), randint(0, 100), randint(0, 100), randint(0, 100)]
+d = {}
+for i in range(len(a)):
+    d.setdefault(a[i], i)
+print(d)
+print(sorted(d.items()))
+print(sorted(d.items())[0][1])
