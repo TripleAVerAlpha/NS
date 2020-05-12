@@ -73,9 +73,9 @@ for k in range(15):
     netL = NNet(netP)
     players.append(Player(netL))
 game = Game(players)
-game.weBrokeThisGame(2, 1, 2)
+game.weBrokeThisGame(10, 1, 1)
 # Отрисовываем
-paint()
+paint(players[0].net)
 # time.sleep(3)
 # net.mutate(0.1)
 # # Отрисовываем

@@ -36,10 +36,10 @@ class NNet:
 
     def mutate(self, mutationPer):
         # ААААААААААА Это треш, обьяснить за секунду, написать год!
-        for i in range(1, len(self.net)-1):
+        for i in range(1, len(self.net) - 1):
             if random() < mutationPer:
                 if randint(0, 1) == 0:
-                    a = randint(0, len(self.net[i])-1)
+                    a = randint(0, len(self.net[i]) - 1)
                     self.net[i].pop(a)
                     for j in range(len(self.net[i - 1])):
                         self.net[i - 1][j].exits = range(len(self.net[i]))
@@ -49,7 +49,7 @@ class NNet:
                     for j in range(len(self.net[i + 1])):
                         self.net[i + 1][j].enters = dict(d)
                 else:
-                    a = randint(0, len(self.net[i])-1)
+                    a = randint(0, len(self.net[i]) - 1)
                     d = {}
                     for j in range(len(self.net[i - 1])):
                         self.net[i - 1][j].exits = range(len(self.net[i]) + 1)
@@ -96,12 +96,13 @@ class NNet:
 
     def learn(self, trFl, answer, teacher):
         if trFl:
-            knut = 0.1
+            knut = 1
         else:
             knut = -0.1
         for i in range(len(self.net)):
             for j in range(len(self.net[i])):
                 for k in self.net[i][j].enters:
+                    print(teacher.sumWay[i][j][answer])
                     self.net[i][j].enters[k][1] += teacher.sumWay[i][j][answer] * knut
 
     def giveEnters(self, enters):
@@ -112,9 +113,10 @@ class NNet:
         self.update()
         maxI = 0
         for i in range(len(self.net[len(self.net) - 1])):
+            # print(f"Нейрон {i}: {self.net[len(self.net) - 1][i].value}")
             if self.net[len(self.net) - 1][i].value >= self.net[len(self.net) - 1][maxI].value:
                 maxI = i
-        print(f"Выбраный сектор {maxI}")
+        # print(f"Выбраный сектор {maxI}")
         return maxI
 
 
@@ -127,6 +129,7 @@ class Teacher:
                 a.append([0] * 6)
             b.append(a)
         self.sumWay = b
+        self.updateSumWay(net.net)
 
     def updateSumWay(self, net):
         for k in range(6):
@@ -138,5 +141,9 @@ class Teacher:
                     for g in range(len(net[iI][j].exits)):
                         a = net[iI][j].exits[g]
                         self.sumWay[iI][j][k] += self.sumWay[iI + 1][a][k]
-                    self.sumWay[iI][j][k] = (1 + (
-                            1 - (0.052 * self.sumWay[iI][j][k]) / (0.9 + 0.048 * self.sumWay[iI][j][k]))) * 100
+        a = self.sumWay[0][0][0]
+        for i in range(len(self.sumWay)):
+            iI = len(self.sumWay) - 1 - i
+            for j in range(len(self.sumWay[iI])):
+                for k in range(6):
+                    self.sumWay[iI][j][k] = self.sumWay[iI][j][k] / a

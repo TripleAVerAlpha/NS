@@ -26,7 +26,7 @@ class Game:
                 # Создаем учителей
                 teacher.append(Teacher(self.players[g].net))
             for j in range(learnTour):
-                print(f"Идет {i + 1}/{allTour} тур, {j}/{learnTour}")
+                print(f"Идет {i + 1}/{allTour} тур, {j}/{learnTour}(Обучение)")
                 self.simulatedGame(teacher)
             for k in range(gameTour):
                 print(f"Идет {i + 1}/{allTour} тур, {k}/{gameTour}")
@@ -91,7 +91,7 @@ class Game:
                 m[5] = 0.3
             # Выдаем игрокам их кровные денюжки
             for l in range(len(self.players)):
-                print(f"Игрок {l} заработал {(m[self.players[l].answer - h * 6] - 1)*100}% у него было {self.players[l].money} стало {self.players[l].money * m[self.players[l].answer - h * 6]}")
+                # print(f"Игрок {l} заработал {(m[self.players[l].answer - h * 6] - 1)*100}% у него было {self.players[l].money} стало {self.players[l].money * m[self.players[l].answer - h * 6]}")
                 self.players[l].money = self.players[l].money * m[self.players[l].answer - h * 6]
 
             # Если учителя нет, значит раунд без обучения
@@ -128,7 +128,9 @@ class Game:
                     # 4 - 2
                     # 5 - 1
                     # Остальные - 0
+        a = ["Сбербанк    ", "Газпром      ", "Яндекс       ", "ГазпромНефть", "СтартUp      ", "мМм         "]
         for i in range(6):
+            print(a[i], end='\t')
             for j in range(6):
                 print(self.game[i + j*6], end='\t')
             print()
