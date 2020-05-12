@@ -5,9 +5,10 @@ from tkinter import *
 
 # Подключаем классы из NNet.py
 from NNet import *
+from Player import *
 
 
-def paint():
+def paint(net):
     # Ищем самый жирный слой (в котором больше всего нейронов)
     canvas.delete("All")
     maxN = 0
@@ -51,36 +52,33 @@ canvas = Canvas(window, width=windll.user32.GetSystemMetrics(0), height=windll.u
 # Соединяем это воедино
 canvas.pack()
 
-d = {}
-# Создаем структуру нейронной сети
-netS = [36, randint(1, 36), randint(1, 36), randint(1, 36), randint(1, 36), randint(1, 36), randint(1, 36), 6, 0]
-print(netS)
-netP = []
-for j in range(len(netS) - 1):
-    a = []
-    for k in range(netS[j]):
-        if j != 0:
-            for i in range(netS[j - 1]):
-                d.setdefault(i, [0, random()])
-        a.append(Perceptron(d, range(netS[j + 1])))
+players = []
+for k in range(15):
+    d = {}
+    #  Создаем структуру нейронной сети
+    netS = [36, randint(1, 36), randint(1, 36), randint(1, 36), randint(1, 36), randint(1, 36), randint(1, 36), 6, 0]
+    netP = []
+    for j in range(len(netS) - 1):
+        a = []
+        for k in range(netS[j]):
+            if j != 0:
+                for i in range(netS[j - 1]):
+                    d.setdefault(i, [0, random()])
+            a.append(Perceptron(d, range(netS[j + 1])))
+            d.clear()
+        netP.append(a)
         d.clear()
-    netP.append(a)
-    d.clear()
 
-# Создаем сеть опираясь на структуру
-net = NNet(netP)
+    # Создаем сеть опираясь на структуру
+    netL = NNet(netP)
+    players.append(Player(netL))
+game = Game(players)
+game.weBrokeThisGame(2, 1, 2)
 # Отрисовываем
-# paint()
+paint()
 # time.sleep(3)
 # net.mutate(0.1)
 # # Отрисовываем
 # paint()
 # # Задерживаем окно на экране
-# window.mainloop()
-a = [randint(0, 100), randint(0, 100), randint(0, 100), randint(0, 100), randint(0, 100)]
-d = {}
-for i in range(len(a)):
-    d.setdefault(a[i], i)
-print(d)
-print(sorted(d.items()))
-print(sorted(d.items())[0][1])
+window.mainloop()

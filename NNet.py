@@ -36,9 +36,6 @@ class NNet:
 
     def mutate(self, mutationPer):
         # ААААААААААА Это треш, обьяснить за секунду, написать год!
-        for i in range(len(self.net)):
-            print(len(self.net[i]), end="\t")
-        print()
         for i in range(1, len(self.net)-1):
             if random() < mutationPer:
                 if randint(0, 1) == 0:
@@ -85,8 +82,7 @@ class NNet:
                 d = {0: [0, random()], 1: [1, random()]}
                 for i in range(len(self.net[a + 1])):
                     self.net[a + 1][i].enters = dict(d)
-        for i in range(len(self.net)):
-            print(len(self.net[i]), end="\t")
+        return self
 
     # Метод подготовки следующего слоя к пересчету
     def goTNL(self, layer):
@@ -103,8 +99,8 @@ class NNet:
             knut = 0.1
         else:
             knut = -0.1
-        for i in range(self.net):
-            for j in range(self.net[i]):
+        for i in range(len(self.net)):
+            for j in range(len(self.net[i])):
                 for k in self.net[i][j].enters:
                     self.net[i][j].enters[k][1] += teacher.sumWay[i][j][answer] * knut
 
@@ -116,8 +112,9 @@ class NNet:
         self.update()
         maxI = 0
         for i in range(len(self.net[len(self.net) - 1])):
-            if len(self.net[len(self.net) - 1][i]) >= len(self.net[len(self.net) - 1][maxI]):
-                maxI = len(self.net[len(self.net) - 1][i])
+            if self.net[len(self.net) - 1][i].value >= self.net[len(self.net) - 1][maxI].value:
+                maxI = i
+        print(f"Выбраный сектор {maxI}")
         return maxI
 
 
