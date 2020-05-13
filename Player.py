@@ -74,9 +74,9 @@ class Game:
             # Сбер
             m[0] = 1.1
             # Газпром
-            m[1] = (35 / self.game[self.players[l].answer])
+            m[1] = (10 / self.game[self.players[l].answer])
             # Яндекс
-            m[2] = (25 / self.game[self.players[l].answer])
+            m[2] = (5 / self.game[self.players[l].answer])
             # ГазпромНефть
             m[3] = (self.game[self.players[l].answer - 2] / self.game[self.players[l].answer])
             # Старт ап

@@ -26,7 +26,7 @@ def paint(net):
         by = (windll.user32.GetSystemMetrics(1) - len(net.net[i + 1]) * sizeNY) / 2
         ax = (windll.user32.GetSystemMetrics(0) - len(net.net) * sizeNX) / 2
         for j in range(len(net.net[i])):
-            for k in net.net[i][j].exits:
+            for k in range(len(net.net[i][j].exits)):
                 canvas.create_line(ax + i * sizeNX + sizeNX * 0.4, ay + j * sizeNY + sizeNY * 0.4,
                                    ax + (i + 1) * sizeNX + sizeNX * 0.4,
                                    by + net.net[i][j].exits[k] * sizeNY + sizeNY * 0.4)
@@ -56,24 +56,37 @@ players = []
 for k in range(15):
     d = {}
     #  Создаем структуру нейронной сети
-    netS = [36, randint(1, 36), randint(1, 36), randint(1, 36), randint(1, 36), randint(1, 36), randint(1, 36), 6, 0]
+    netS = [37, randint(3, 36), randint(3, 36), randint(3, 36), randint(3, 36), randint(3, 36), randint(3, 36), 6, 0]
     netP = []
     for j in range(len(netS) - 1):
         a = []
-        for k in range(netS[j]):
+        for s in range(netS[j]):
             if j != 0:
+                f = []
                 for i in range(netS[j - 1]):
-                    d.setdefault(i, [0, random()])
-            a.append(Perceptron(d, range(netS[j + 1])))
+                    f.append(i)
+                cash = int(randint(2, netS[j - 1])/2)
+                for i in range(cash):
+                    c = randint(0, len(f) - 1)
+                    d.setdefault(f[c], [0, random()])
+                    f.pop(c)
+            a.append(Perceptron(d, []))
             d.clear()
         netP.append(a)
         d.clear()
+
+    for j in range(len(netS) - 1):
+        for s in range(netS[j]):
+            for l in range(netS[j + 1]):
+                for g in netP[j + 1][l].enters.keys():
+                    if g == s:
+                        netP[j][s].exits.append(l)
 
     # Создаем сеть опираясь на структуру
     netL = NNet(netP)
     players.append(Player(netL))
 game = Game(players)
-game.weBrokeThisGame(10, 1, 1)
+game.weBrokeThisGame(10, 1, 30)
 # Отрисовываем
 paint(players[0].net)
 # time.sleep(3)

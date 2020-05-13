@@ -17,6 +17,7 @@ class Perceptron:
         for i in range(len(cash)):
             a = cash[i][0] * cash[i][1]
             self.value += a
+        self.value = self.value / len(cash)
 
 
 class NNet:
@@ -102,11 +103,11 @@ class NNet:
         for i in range(len(self.net)):
             for j in range(len(self.net[i])):
                 for k in self.net[i][j].enters:
-                    print(teacher.sumWay[i][j][answer])
                     self.net[i][j].enters[k][1] += teacher.sumWay[i][j][answer] * knut
 
     def giveEnters(self, enters):
-        for i in range(len(self.net[0])):
+        self.net[0][len(self.net[0])-1].value = 1
+        for i in range(len(self.net[0])-1):
             self.net[0][i].value = enters[i]
 
     def getSolution(self):
@@ -114,7 +115,7 @@ class NNet:
         maxI = 0
         for i in range(len(self.net[len(self.net) - 1])):
             # print(f"Нейрон {i}: {self.net[len(self.net) - 1][i].value}")
-            if self.net[len(self.net) - 1][i].value >= self.net[len(self.net) - 1][maxI].value:
+            if self.net[len(self.net) - 1][i].value > self.net[len(self.net) - 1][maxI].value:
                 maxI = i
         # print(f"Выбраный сектор {maxI}")
         return maxI
@@ -141,9 +142,14 @@ class Teacher:
                     for g in range(len(net[iI][j].exits)):
                         a = net[iI][j].exits[g]
                         self.sumWay[iI][j][k] += self.sumWay[iI + 1][a][k]
-        a = self.sumWay[0][0][0]
+        pMax = 0
+        for i in range(len(self.sumWay[0])):
+            for j in range(6):
+                if pMax < self.sumWay[0][i][j]:
+                    pMax = self.sumWay[0][i][j]
+
         for i in range(len(self.sumWay)):
             iI = len(self.sumWay) - 1 - i
             for j in range(len(self.sumWay[iI])):
                 for k in range(6):
-                    self.sumWay[iI][j][k] = self.sumWay[iI][j][k] / a
+                    self.sumWay[iI][j][k] = self.sumWay[iI][j][k] / pMax
