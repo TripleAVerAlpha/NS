@@ -1,4 +1,3 @@
-a = {1: "s"}
-print(a.keys())
-for g in a.keys():
-    print(g)
+print(10 / 3)
+print(int(10 / 3))
+print(10 % 3)

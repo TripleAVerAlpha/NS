@@ -1,12 +1,14 @@
 import copy
 from random import randint
-
+import openpyxl
+import time
 from NNet import *
 
 
 class Player:
     def __init__(self, net):
         self.money = 10
+        self.maxMoney = 0
         self.net = NNet(net.net)
         self.answer = -1
 
@@ -16,38 +18,50 @@ class Game:
         self.players = players
         self.score = [0] * len(self.players)
         self.game = [0] * 36
+        self.tour = 0
+        self.beginTime = time.time()
 
     def weBrokeThisGame(self, learnTour, gameTour, allTour):
         for i in range(allTour):
-
+            print(f"Популяция {i+1} Средне время на популяцию {(time.time() - self.beginTime)/(i+0.0000001)}")
+            timeNow = (time.time() - self.beginTime)/(i+0.0000001) * (allTour - i)
+            print(f"Осталось времени:{int(timeNow / (3600 * 24))} {int(timeNow % (3600 * 24) / 3600)} часов {int(timeNow % 3600 / 60)} минут {timeNow % 60} секунд")
             # Готовим массив под учителей
             teacher = []
             for g in range(len(self.players)):
                 # Создаем учителей
                 teacher.append(Teacher(self.players[g].net))
             for j in range(learnTour):
-                print(f"Идет {i + 1}/{allTour} тур, {j}/{learnTour}(Обучение)")
+                a = time.time()
                 self.simulatedGame(teacher)
+                timeNow = timeNow - (time.time() - a)
+                print(f"\r Идет {i + 1}/{allTour} тур, {j+1}/{learnTour}(Обучение) \n Затраченое время:{time.time() - a}, Осталось времени: {int(timeNow / (3600 * 24))} дней {int(timeNow % (3600 * 24) / 3600)} часов {int(timeNow % 3600 / 60)} минут {int(timeNow % 60)} секунд", end="")
+            print()
             for k in range(gameTour):
-                print(f"Идет {i + 1}/{allTour} тур, {k}/{gameTour}")
+                print(f"\r Идет {i + 1}/{allTour} тур, {k+1}/{gameTour}", end="")
                 self.simulatedGame(None)
-        # Итак, игры первой группы нейро сетей закончены, самое время создать новую группу
-        d = {}
-        for i in range(len(self.players)):
-            d.setdefault(i, self.score[i])
-        playerCash = []
-        listD = list(d.items())
-        listD.sort(key=lambda i: i[1])
-        for i in range(1, 6):
-            playerCash.append(Player(self.players[listD[len(self.players)-i][0]].net))
-            playerCash.append(Player(self.players[listD[len(self.players)-i][0]].net.mutate(0.1)))
-            playerCash.append(Player(self.players[listD[len(self.players)-i][0]].net.mutate(0.1)))
-            playerCash.append(Player(self.players[listD[len(self.players)-i][0]].net.mutate(0.1)))
-        self.players = list(playerCash)
-        # Опираясь на Очки выбираем 5 лучших нс
-        # Кладем их и 2 копии в новый массив playerCash
-        # У копий вызываем метод mutate
-        # list(playerCash) приравниваем players
+            print()
+            self.savePlayers(teacher, gameTour)
+            self.tour += 1
+            # Итак, игры первой группы нейро сетей закончены, самое время создать новую группу
+            d = {}
+            for k in range(len(self.players)):
+                d.setdefault(k, self.score[k])
+            playerCash = [None] * 20
+            listD = list(d.items())
+            listD.sort(key=lambda i: i[1])
+            for j in range(1, 6):
+                playerCash[listD[len(self.players) - j][0]] = Player(self.players[listD[len(self.players) - j][0]].net)
+            for j in range(20):
+                if playerCash[j] is None:
+                    playerCash[j] = Player(self.players[listD[len(self.players) - (j % 5 + 1)][0]].net.mutate(0.1))
+            self.players = list(playerCash)
+            # Опираясь на Очки выбираем 5 лучших нс
+            # Кладем их и 2 копии в новый массив playerCash
+            # У копий вызываем метод mutate
+            # list(playerCash) приравниваем players
+            timeNow = time.time() - self.beginTime
+            print(f"Потрачено времени: {int(timeNow / (3600 * 24))} дней {int(timeNow % (3600 * 24) / 3600)} часов {int(timeNow % 3600 / 60)} минут {int(timeNow % 60)} секунд")
 
     def simulatedGame(self, teacher):
         self.game = [0] * 36
@@ -57,7 +71,7 @@ class Game:
 
         # Начинаем игру
         for h in range(6):
-            print("Тур")
+            # print("Тур")
             #  Рассказали участиникам результаты прошлых игр
             for l in range(len(self.players)):
                 self.players[l].net.giveEnters(self.game)
@@ -119,7 +133,11 @@ class Game:
                     listD = list(d.items())
                     listD.sort(key=lambda i: i[1])
                     for i in range(1, 6):
-                        self.score[listD[len(self.players)-i][0]] += d1[i-1]
+                        # print(self.score)
+                        # print(len(self.players))
+                        # print(len(self.score))
+                        # print(d1[i - 1])
+                        self.score[listD[len(self.players) - i][0]] += d1[i - 1]
 
                     # Если учителя нет, добавляем Очки в зависимости от места:
                     # 1 - 10 очков
@@ -128,10 +146,29 @@ class Game:
                     # 4 - 2
                     # 5 - 1
                     # Остальные - 0
-        a = ["Сбербанк    ", "Газпром      ", "Яндекс       ", "ГазпромНефть", "СтартUp      ", "мМм         "]
-        for i in range(6):
-            print(a[i], end='\t')
-            for j in range(6):
-                print(self.game[i + j*6], end='\t')
-            print()
-        print(self.game)
+        for i in range(len(self.players)):
+                self.players[i].maxMoney += self.players[i].money
+        # a = ["Сбербанк    ", "Газпром      ", "Яндекс       ", "ГазпромНефть", "СтартUp      ", "мМм         "]
+        # for i in range(6):
+        #     print(a[i], end='\t')
+        #     for j in range(6):
+        #         print(self.game[i + j * 6], end='\t')
+        #     print()
+        # print(self.game)
+
+    def savePlayers(self, teacher, kolTure):
+        excel = openpyxl.load_workbook(filename='excel/xl.xlsx')
+        sheet = excel['players']
+        for i in range(len(self.players)):
+            neyronKol = 0
+            pathKol = 0
+            for j in range(len(self.players[i].net.net)):
+                neyronKol += len(self.players[i].net.net[j])
+            for j in range(len(self.players[i].net.net[0])):
+                for k in range(6):
+                    pathKol += teacher[i].sumWay[0][j][k]
+            sheet.cell(row=(1 + i), column=(1 + self.tour)).value = self.players[i].maxMoney / kolTure
+        sheet = excel['game']
+        for i in range(len(self.game)):
+            sheet.cell(row=(1 + i), column=(1 + self.tour)).value = self.game[i]
+        excel.save('excel/xl.xlsx')
